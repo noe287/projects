@@ -1,10 +1,6 @@
 #include "common.h"
 #include <pthread.h>
 
-
-//TAILQ_HEAD(, route_entry) route_list_head;
-
-
 #define SOCKET_NAME "CommSock"
 #define BUFFER_SIZE 128
 #define MAX_CLIENT_SUPPORTED 32
@@ -179,39 +175,6 @@ static void *inform_clients(void *arg) {
 				}
 			}
 			update_clients.opcode = -1;
-			/* if (update_clients.opcode == 0) { */
-			/* 	for(; i < MAX_CLIENT_SUPPORTED; i++) { */
-			/* 		if (monitored_fd_set[i] != -1) { */
-			/* 			if ((nbytes = write(monitored_fd_set[i], &update_clients, sizeof(update_clients)) != sizeof(sync_msg_t))) */
-			/* 			{ */
-			/* 				printf("Error sending new route entry to the clients\n"); */
-			/* 			} */
-			/* 		} */
-			/* 	} */
-			/* 	update_clients.opcode = -1; */
-			/* } else if (update_clients.opcode == 1) { */
-			/* 	int i = 2; */
-			/* 	for(; i < MAX_CLIENT_SUPPORTED; i++) { */
-			/* 		if (monitored_fd_set[i] != -1) { */
-			/* 			if ((nbytes = write(monitored_fd_set[i], &update_clients, sizeof(update_clients)) != sizeof(sync_msg_t))) */
-			/* 			{ */
-			/* 				printf("Error Sending UPDATE to the clients\n"); */
-			/* 			} */
-			/* 		} */
-			/* 	} */
-			/* 	update_clients.opcode = -1; */
-			/* } else if (update_clients.opcode == 2) { */
-			/* 	int i = 2; */
-			/* 	for(; i < MAX_CLIENT_SUPPORTED; i++) { */
-			/* 		if (monitored_fd_set[i] != -1) { */
-			/* 			if ((nbytes = write(monitored_fd_set[i], &update_clients, sizeof(update_clients)) != sizeof(sync_msg_t))) */
-			/* 			{ */
-			/* 				  printf("Error Sending DELETE to the clients\n"); */
-			/* 			} */
-			/* 		} */
-			/* 	} */
-			/* 	update_clients.opcode = -1; */
-			//}
 		}
 		s = pthread_mutex_unlock(&mtx);
 		if (s != 0) {
@@ -280,7 +243,6 @@ int main() {
 	if (s != 0)
 		exit(EXIT_FAILURE);
 
-
 	for(;;) {
 		refresh_fd_set(&readfds);
 		printf("Waiting on select()\n");
@@ -312,36 +274,6 @@ int main() {
 
 		}
 
-		/* else { */
-		/* 	i = 0; comm_socket = -1; */
-		/* 	for(; i < MAX_CLIENT_SUPPORTED; i ++) { */
-		/* 		if (FD_ISSET(monitored_fd_set[i], &readfds)) { */
-		/* 			comm_socket = monitored_fd_set[i]; */
-		/* 			memset(buffer, 0, BUFFER_SIZE); */
-                /*  */
-		/* 			printf("Waiting for data from the client\n"); */
-		/* 			ret = read(comm_socket, buffer, BUFFER_SIZE); */
-		/* 			if (ret == -1) { */
-		/* 				perror("Read error"); */
-		/* 				exit(EXIT_FAILURE); */
-		/* 			} */
-		/* 			memcpy(&data, buffer, sizeof(int)); */
-		/* 			if (data == 0) { */
-		/* 				memset(buffer, 0, BUFFER_SIZE); */
-		/* 				sprintf(buffer, "Result = %d", 10); */
-		/* 				printf("Sending result back to the client\n"); */
-		/* 				ret = write(comm_socket, buffer, BUFFER_SIZE); */
-		/* 				if (ret == -1) { */
-		/* 					perror("Write error"); */
-		/* 					exit(EXIT_FAILURE); */
-		/* 				} */
-		/* 				close(comm_socket); */
-		/* 				rm_from_monitored_fd_set(comm_socket); */
-		/* 				continue; */
-		/* 			} */
-		/* 		} */
-		/* 	} */
-		/* } */
 	}
 	return 0;
 }

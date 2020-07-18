@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
 	struct sockaddr_un addr;
 	int size = 0;
-	int ret = 0;//, nbytes = 0;
+	int ret = 0;
 	int data_socket;
 	sync_msg_t received_msg;
 	struct route_entry *route = NULL;

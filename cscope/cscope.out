@@ -1,4 +1,4 @@
-cscope 15 $HOME/playground/cprogramming/src/socket/project1/cscope -q 0000002200 0000167443
+cscope 15 $HOME/playground/cprogramming/src/socket/project1/cscope -q 0000002204 0000170197
 	@/home/systems/playground/cprogramming/src/socket/project1/client-server/client.c
 
 1 
@@ -11,7 +11,7 @@ cscope 15 $HOME/playground/cprogramming/src/socket/project1/cscope -q 0000002200
 
 5 
 	#SOCKET_NAME
- "../CommSock"
+ "CommSock"
 
 	)
 
@@ -47,13 +47,27 @@ size
 d©a_sock‘
 ;
 
-16 
-msg_body_t
+15 
+sync_msg_t
  
 »ûived_msg
 ;
 
+16 
+rou‹_’Œy
+ *
+rou‹
+ = 
+NULL
+;
+
 18 
+	`TAILQ_INIT
+(&
+rou‹_li¡_h—d
+);
+
+20 
 d©a_sock‘
  = 
 	`sock‘
@@ -63,21 +77,21 @@ AF_UNIX
 SOCK_STREAM
 , 0);
 
-20 ià(
+22 ià(
 d©a_sock‘
  == -1){
 
-21 
+23 
 	`³¼Ü
 ("Socket failure");
 
-22 
+24 
 	`ex™
 (
 EXIT_FAILURE
 );
 
-25 
+27 
 	`mem£t
 (&
 addr
@@ -85,7 +99,7 @@ addr
 sockaddr_un
 ));
 
-27 
+29 
 addr
 .
 sun_çmy
@@ -93,7 +107,7 @@ sun_çmy
 AF_UNIX
 ;
 
-28 
+30 
 	`¡ºıy
 (
 addr
@@ -103,7 +117,7 @@ sun_·th
 SOCKET_NAME
 , (addr.sun_path));
 
-30 
+32 
 »t
  = 
 	`cÚÃù
@@ -117,23 +131,23 @@ addr
 sockaddr_un
 ));
 
-31 ià(
+33 ià(
 »t
  == -1){
 
-32 
+34 
 	`årštf
 (
 ¡d”r
 , "The server is‚ot„eachable\n");
 
-33 
+35 
 	`ex™
 (
 EXIT_FAILURE
 );
 
-37 ià((
+39 ià((
 size
  = 
 	`»cv
@@ -142,28 +156,244 @@ d©a_sock‘
 , (*è&
 »ûived_msg
 ,(
-msg_body_t
+sync_msg_t
 ),0)) >= 0) {
 
-38 
+40 
+	`´štf
+("r.İcod%d\n", 
+»ûived_msg
+.
+İcode
+);
+
+41 
+»ûived_msg
+.
+İcode
+) {
+
+42 
+CREATE
+:
+
+43 
 	`´štf
 ("Msg„eûived w™h siz%d by‹s\n", 
 size
 );
 
+44 
+	`´štf
+("Creating„outeƒntry\n");
+
+45 
+	`´štf
+("r.gw_ %s\n", 
+»ûived_msg
+.
+msg
+.
+gw_
+);
+
+46 
+	`´štf
+("r.de¡_ %s\n", 
+»ûived_msg
+.
+msg
+.
+de¡_
+);
+
+47 
+	`´štf
+("r.out_içû %s\n", 
+»ûived_msg
+.
+msg
+.
+out_içû
+);
+
+48 
+	`´štf
+("r.mask %d\n", 
+»ûived_msg
+.
+msg
+.
+mask
+);
+
+49 
+	`´štf
+("r.İcod%d\n", 
+»ûived_msg
+.
+İcode
+);
+
 50 
+rou‹
+ = (
+rou‹_’Œy
+ *)
+	`m®loc
+((route_entry));
+
+51 ià(
+rou‹
+ =ğ
+NULL
+) {
+
+52 
+	`´štf
+("Cannot‡llocate memory forhe„outeƒntry\n");
+
+54 
+	`¡ºıy
+(
+rou‹
+->
+de¡_
+, 
+»ûived_msg
+.
+msg
+.dest_ip, (received_msg.msg.dest_ip));
+
+55 
+	`¡ºıy
+(
+rou‹
+->
+gw_
+, 
+»ûived_msg
+.
+msg
+.gw_ip, (received_msg.msg.gw_ip));
+
+56 
+	`¡ºıy
+(
+rou‹
+->
+out_içû
+, 
+»ûived_msg
+.
+msg
+.out_iface, (received_msg.msg.out_iface));
+
+57 
+rou‹
+->
+mask
+ = 
+»ûived_msg
+.
+msg
+.mask;
+
+58 
+	`TAILQ_INSERT_TAIL
+(&
+rou‹_li¡_h—d
+, 
+rou‹
+, 
+rou‹_Ãxt_´ev
+);
+
+59 
+	`dump_bË
+();
+
+61 
+UPDATE
+:
+
+62 
+	`´štf
+("Upd©šgƒÁry w™h gw_ % w™h‚ew de¡_ %s\n", 
+»ûived_msg
+.
+msg
+.
+gw_
+,„eûived_msg.msg.
+de¡_
+);
+
+63 
+	`upd©e_»Áry
+(
+»ûived_msg
+.
+msg
+.
+gw_
+,»ûived_msg.msg.
+de¡_
+);
+
+64 
+	`dump_bË
+();
+
+66 
+DELETE
+:
+
+67 
+	`´štf
+("D–‘šgƒÁry w™h gw_ %s\n", 
+»ûived_msg
+.
+msg
+.
+gw_
+);
+
+68 
+	`d–‘e_»Áry
+(
+»ûived_msg
+.
+msg
+.
+gw_
+);
+
+69 
+	`dump_bË
+();
+
+72 
+	`´štf
+("No such operation is defined,„etry\n");
+
+75 
+	`´štf
+("Received msg size does‚ot matchheƒxpected one,„etry\n");
+
+77 
 	`şo£
 (
 d©a_sock‘
 );
 
-52 
+78 
 	`ex™
 (
 EXIT_SUCCESS
 );
 
-54 
+79 
 	}
 }
 
@@ -177,81 +407,103 @@ EXIT_SUCCESS
 	~<±h»ad.h
 >
 
-7 
-	g»t
-;
-
-9 
+8 
 	#SOCKET_NAME
- "../CommSock"
+ "CommSock"
 
 	)
 
-10 
+9 
 	#BUFFER_SIZE
  128
 
 	)
 
-11 
+10 
 	#MAX_CLIENT_SUPPORTED
  32
 
 	)
 
-14 
+12 
+±h»ad_mu‹x_t
+ 
+	gmtx
+ = 
+PTHREAD_MUTEX_INITIALIZER
+;
+
+13 
+±h»ad_cÚd_t
+ 
+	gcÚd
+ = 
+PTHREAD_COND_INITIALIZER
+;
+
+16 
 	gmÚ™Üed_fd_£t
 [
 MAX_CLIENT_SUPPORTED
 ];
 
-16 
+17 
+	g»t
+;
+
+18 
+sync_msg_t
+ 
+	gupd©e_ş›Ás
+;
+
+20 
 	$š™_mÚ™Üed_fd_£t
 () {
 
-18 
+22 
 i
  = 0;
 
-19 ; 
+23 ; 
 i
  < 
 MAX_CLIENT_SUPPORTED
 ; i++)
 
-20 
+24 
 mÚ™Üed_fd_£t
 [
 i
 ] = -1;
 
-21 
+25 
 	}
 }
 
-23 
+27 
 	$add_to_mÚ™Üed_fd_£t
 (
 Ãw_fd
 ) {
 
-25 
+29 
 i
  = 0;
 
-26 ; 
+30 ; 
 i
  < 
 MAX_CLIENT_SUPPORTED
 ; i++) {
 
-27 ià(
+31 ià(
 mÚ™Üed_fd_£t
 [
 i
 ] != -1)
 
-30 
+33 
 mÚ™Üed_fd_£t
 [
 i
@@ -259,27 +511,27 @@ i
 Ãw_fd
 ;
 
-33 
+36 
 	}
 }
 
-35 
+38 
 	$rm_äom_mÚ™Üed_fd_£t
 (
 rm_fd
 ) {
 
-37 
+40 
 i
  = 0;
 
-39 ; 
+42 ; 
 i
  < 
 MAX_CLIENT_SUPPORTED
 ; i++) {
 
-40 ià(
+43 ià(
 mÚ™Üed_fd_£t
 [
 i
@@ -287,17 +539,17 @@ i
 rm_fd
 )
 
-43 
+46 
 mÚ™Üed_fd_£t
 [
 i
 ] = -1;
 
-46 
+49 
 	}
 }
 
-48 
+51 
 	$»äesh_fd_£t
 (
 fd_£t
@@ -305,29 +557,29 @@ fd_£t
 fd_£t_±r
 ) {
 
-50 
+53 
 	`FD_ZERO
 (
 fd_£t_±r
 );
 
-51 
+54 
 i
  = 0;
 
-52 ;
+55 ;
 i
  < 
 MAX_CLIENT_SUPPORTED
 ; i++){
 
-53 ià(
+56 ià(
 mÚ™Üed_fd_£t
 [
 i
 ] != -1) {
 
-54 
+57 
 	`FD_SET
 (
 mÚ™Üed_fd_£t
@@ -337,29 +589,29 @@ i
 fd_£t_±r
 );
 
-57 
+60 
 	}
 }
 
-59 
+62 
 	$g‘_max_fd
 () {
 
-60 
+63 
 i
  = 0;
 
-61 
+64 
 max
  = -1;
 
-63 ; 
+66 ; 
 i
  < 
 MAX_CLIENT_SUPPORTED
 ; i++) {
 
-64 ià(
+67 ià(
 mÚ™Üed_fd_£t
 [
 i
@@ -367,7 +619,7 @@ i
 max
 )
 
-65 
+68 
 max
  = 
 mÚ™Üed_fd_£t
@@ -375,33 +627,33 @@ mÚ™Üed_fd_£t
 i
 ];
 
-67  
+70  
 max
 ;
 
-68 
+71 
 	}
 }
 
-70 *
+73 *
 	$g‘_u£r_šput
 (*
 ¬g
 )
 
-72 
+75 
 gw_
 [16] = {0};
 
-73 
+76 
 de¡_
 [16] = {0};
 
-74 
+77 
 İcode
 ;
 
-75 
+78 
 rou‹_’Œy
  *
 rou‹
@@ -409,35 +661,35 @@ rou‹
 NULL
 ;
 
-78 
+81 
 	`´štf
 ("Pleaseƒnterype ofhe operation: Create(0), Update(1), Delete(2), Dump(3), Exit(4)\n");
 
-79 
+82 
 	`fæush
 (
 ¡dout
 );
 
-80 
+83 
 	`sÿnf
 ("%d", &
 İcode
 );
 
-81 
+84 
 İcode
 ) {
 
-82 
+85 
 CREATE
 :
 
-83 
+86 
 	`´štf
 ("Creating„outeƒntry\n");
 
-84 
+87 
 rou‹
  = (
 rou‹_’Œy
@@ -445,29 +697,29 @@ rou‹_’Œy
 	`m®loc
 ((route_entry));
 
-85 ià(
+88 ià(
 rou‹
  =ğ
 NULL
 ) {
 
-86 
+89 
 	`´štf
 ("Cannot‡llocate memory forhe„outeƒntry\n");
 
-87 
+90 
 	`±h»ad_ex™
 (&
 »t
 );
 
-89 
+92 
 	`ü—‹_»Áry
 (
 rou‹
 );
 
-90 
+93 
 	`TAILQ_INSERT_TAIL
 (&
 rou‹_li¡_h—d
@@ -477,43 +729,115 @@ rou‹
 rou‹_Ãxt_´ev
 );
 
-92 
+95 
+	`¡rıy
+(
+upd©e_ş›Ás
+.
+msg
+.
+gw_
+, 
+rou‹
+->gw_ip);
+
+96 
+	`¡rıy
+(
+upd©e_ş›Ás
+.
+msg
+.
+de¡_
+, 
+rou‹
+->dest_ip);
+
+97 
+	`¡rıy
+(
+upd©e_ş›Ás
+.
+msg
+.
+out_içû
+, 
+rou‹
+->out_iface);
+
+98 
+upd©e_ş›Ás
+.
+msg
+.
+mask
+ = 
+rou‹
+->mask;
+
+100 
+	`±h»ad_mu‹x_lock
+(&
+mtx
+);
+
+101 
+upd©e_ş›Ás
+.
+İcode
+ = 
+CREATE
+;
+
+102 
+	`±h»ad_mu‹x_uÆock
+(&
+mtx
+);
+
+103 
+	`±h»ad_cÚd_sigÇl
+(&
+cÚd
+);
+
+105 
 UPDATE
 :
 
-93 
+106 
 	`´štf
 ("Enter Gateway IP:\n");
 
-94 
+107 
 	`fæush
 (
 ¡dout
 );
 
-95 
+108 
 	`sÿnf
 ("%s", 
 gw_
 );
 
-96 
+109 
 	`´štf
 ("Enter New Destination IP:\n");
 
-97 
+110 
 	`fæush
 (
 ¡dout
 );
 
-98 
+111 
 	`sÿnf
 ("%s", 
 de¡_
 );
 
-99 
+113 
 	`upd©e_»Áry
 (
 gw_
@@ -521,173 +845,393 @@ gw_
 de¡_
 );
 
-101 
+115 
+	`¡rıy
+(
+upd©e_ş›Ás
+.
+msg
+.
+gw_
+, gw_ip);
+
+116 
+	`¡rıy
+(
+upd©e_ş›Ás
+.
+msg
+.
+de¡_
+, dest_ip);
+
+118 
+	`±h»ad_mu‹x_lock
+(&
+mtx
+);
+
+119 
+upd©e_ş›Ás
+.
+İcode
+ = 
+UPDATE
+;
+
+120 
+	`±h»ad_mu‹x_uÆock
+(&
+mtx
+);
+
+121 
+	`±h»ad_cÚd_sigÇl
+(&
+cÚd
+);
+
+123 
 DELETE
 :
 
-102 
+124 
 	`´štf
 ("Enter Gateway IP delete :\n");
 
-103 
+125 
 	`fæush
 (
 ¡dout
 );
 
-104 
+126 
 	`sÿnf
 ("%s", 
 gw_
 );
 
-105 
+128 
 	`d–‘e_»Áry
 (
 gw_
 );
 
-107 
+130 
+	`¡rıy
+(
+upd©e_ş›Ás
+.
+msg
+.
+gw_
+, gw_ip);
+
+132 
+	`±h»ad_mu‹x_lock
+(&
+mtx
+);
+
+133 
+upd©e_ş›Ás
+.
+İcode
+ = 
+DELETE
+;
+
+134 
+	`±h»ad_mu‹x_uÆock
+(&
+mtx
+);
+
+135 
+	`±h»ad_cÚd_sigÇl
+(&
+cÚd
+);
+
+137 
 DUMP
 :
 
-108 
+138 
 	`dump_bË
 ();
 
-110 
+140 
 QUIT
 :
 
-111 
+141 
 	`´štf
 ("Quitting...\n");
 
-112 
+142 
 	`±h»ad_ex™
 (&
 »t
 );
 
-114 
+144 
 	`´štf
 ("No such operation is defined,„etry\n");
 
-118 
+148 
 	}
 }
 
-128 
+150 *
+	$šfÜm_ş›Ás
+(*
+¬g
+) {
+
+151 
+sync_msg_t
+ 
+£nd_msg
+;
+
+152 
+nby‹s
+ = 0;
+
+153 
+s
+ = 0;
+
+156 
+s
+ = 
+	`±h»ad_mu‹x_lock
+(&
+mtx
+);
+
+157 ià(
+s
+ != 0) {
+
+158 
+	`³¼Ü
+("Cannot†ock mutex");
+
+159 
+	`±h»ad_ex™
+(&
+»t
+);
+
+162 
+upd©e_ş›Ás
+.
+İcode
+ < 0){
+
+163 
+s
+ = 
+	`±h»ad_cÚd_wa™
+(&
+cÚd
+, &
+mtx
+);
+
+164 ià(
+s
+ != 0) {
+
+165 
+	`³¼Ü
+("Cannot wait on‡ cond variable.");
+
+166 
+	`±h»ad_ex™
+(&
+»t
+);
+
+170 
+upd©e_ş›Ás
+.
+İcode
+ >= 0) {
+
+172 
+i
+ = 2;
+
+173 ; 
+i
+ < 
+MAX_CLIENT_SUPPORTED
+; i++) {
+
+174 ià(
+mÚ™Üed_fd_£t
+[
+i
+] != -1) {
+
+175 ià((
+nby‹s
+ = 
+	`wr™e
+(
+mÚ™Üed_fd_£t
+[
+i
+], &
+upd©e_ş›Ás
+, (upd©e_ş›Ás)è!ğ(
+sync_msg_t
+)))
+
+177 
+	`´štf
+("E¼Ü infÜmšg…“r Ú %dƒv’t\n", 
+upd©e_ş›Ás
+.
+İcode
+);
+
+181 
+upd©e_ş›Ás
+.
+İcode
+ = -1;
+
+216 
+s
+ = 
+	`±h»ad_mu‹x_uÆock
+(&
+mtx
+);
+
+217 ià(
+s
+ != 0) {
+
+218 
+	`³¼Ü
+("Cannot unlock mutex.");
+
+219 
+	`±h»ad_ex™
+(&
+»t
+);
+
+222 
+	}
+}
+
+224 
 	$maš
 () {
 
-129 
+225 
 ±h»ad_t
  
 šput_th»ad
 ;
 
-130 
+226 
+±h»ad_t
+ 
+šfÜm_th»ad
+;
+
+227 
 sockaddr_un
  
 Çme
 ;
 
-131 
+228 
 rou‹_’Œy
  *
 »
 ;
 
-132 
-msg_body_t
+229 
+sync_msg_t
  
 £nd_msg
 ;
 
-133 
+230 
 nby‹s
  = 0;
 
-134 
+231 
 s
  = 1;
 
-135 
+232 
 ma¡”_sock‘
 , 
 i
  = 0;
 
-136 
+233 
 d©a_sock‘
 ;
 
-137 
+234 
 comm_sock‘
 ;
 
-138 
+235 
 d©a
 ;
 
-139 
+236 
 bufãr
 [
 BUFFER_SIZE
 ];
 
-140 
+237 
 fd_£t
  
 »adfds
 ;
 
-144 
+240 
 	`š™_mÚ™Üed_fd_£t
 ();
 
-145 
+241 
 	`add_to_mÚ™Üed_fd_£t
 (0);
 
-146 
+243 
 	`TAILQ_INIT
 (&
 rou‹_li¡_h—d
 );
 
-147 
+245 
 	`uÆšk
 (
 SOCKET_NAME
 );
 
-149 
-	`´štf
-("Creatinghread\n");
-
-150 
-s
- = 
-	`±h»ad_ü—‹
+247 
+	`mem£t
 (&
-šput_th»ad
-, 
-NULL
-, 
-g‘_u£r_šput
-, NULL);
+upd©e_ş›Ás
+, 0, (
+sync_msg_t
+));
 
-151 ià(
-s
- != 0)
-
-152 
-	`ex™
-(0);
-
-155 
+250 
 ma¡”_sock‘
  = 
 	`sock‘
@@ -697,25 +1241,25 @@ AF_UNIX
 SOCK_STREAM
 , 0);
 
-156 ià(
+251 ià(
 ma¡”_sock‘
  == -1){
 
-157 
+252 
 	`³¼Ü
 ("Socket");
 
-158 
+253 
 	`ex™
 (
 EXIT_FAILURE
 );
 
-161 
+256 
 	`´štf
 ("Master Socket Created\n");
 
-162 
+257 
 	`mem£t
 (&
 Çme
@@ -723,7 +1267,7 @@ EXIT_FAILURE
 sockaddr_un
 ));
 
-163 
+258 
 Çme
 .
 sun_çmy
@@ -731,7 +1275,7 @@ sun_çmy
 AF_UNIX
 ;
 
-164 
+259 
 	`¡ºıy
 (
 Çme
@@ -741,7 +1285,7 @@ sun_·th
 SOCKET_NAME
 , (name.sun_path) -1);
 
-166 
+261 
 »t
  = 
 	`bšd
@@ -755,25 +1299,25 @@ sockaddr
 sockaddr_un
 ));
 
-168 ià(
+262 ià(
 »t
  == -1) {
 
-169 
+263 
 	`³¼Ü
 ("Bindƒrror");
 
-170 
+264 
 	`ex™
 (
 EXIT_FAILURE
 );
 
-172 
+266 
 	`´štf
 ("Success on Bind() call\n");
 
-174 
+268 
 »t
  = 
 	`li¡’
@@ -781,37 +1325,85 @@ EXIT_FAILURE
 ma¡”_sock‘
 , 20);
 
-175 ià(
+269 ià(
 »t
  == -1) {
 
-176 
+270 
 	`³¼Ü
 ("Listenƒrror");
 
-177 
+271 
 	`ex™
 (
 EXIT_FAILURE
 );
 
-180 
+273 
 	`add_to_mÚ™Üed_fd_£t
 (
 ma¡”_sock‘
 );
 
-184 
+275 
+	`´štf
+("Creatinghreads\n");
+
+276 
+s
+ = 
+	`±h»ad_ü—‹
+(&
+šput_th»ad
+, 
+NULL
+, 
+g‘_u£r_šput
+, NULL);
+
+277 ià(
+s
+ != 0)
+
+278 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+279 
+s
+ = 
+	`±h»ad_ü—‹
+(&
+šfÜm_th»ad
+, 
+NULL
+, 
+šfÜm_ş›Ás
+, NULL);
+
+280 ià(
+s
+ != 0)
+
+281 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+285 
 	`»äesh_fd_£t
 (&
 »adfds
 );
 
-185 
+286 
 	`´štf
 ("Waiting on select()\n");
 
-186 
+287 
 	`£Ëù
 (
 	`g‘_max_fd
@@ -821,7 +1413,7 @@ ma¡”_sock‘
 NULL
 , NULL, NULL);
 
-188 ià(
+290 ià(
 	`FD_ISSET
 (
 ma¡”_sock‘
@@ -829,7 +1421,7 @@ ma¡”_sock‘
 »adfds
 )) {
 
-189 
+291 
 d©a_sock‘
  = 
 	`acû±
@@ -839,87 +1431,101 @@ ma¡”_sock‘
 NULL
 , NULL);
 
-190 ià(
+292 ià(
 d©a_sock‘
  == -1) {
 
-191 
+293 
 	`³¼Ü
 ("Acceptƒrror");
 
-192 
+294 
 	`ex™
 (
 EXIT_FAILURE
 );
 
-194 
+296 
 	`´štf
 ("A‚ew client connection isƒstablished \n");
 
-195 
+297 
 	`add_to_mÚ™Üed_fd_£t
 (
 d©a_sock‘
 );
 
-196 
-	`dump_bË
-();
-
-197 ià(!
+299 ià(!
 	`TAILQ_EMPTY
 (&
 rou‹_li¡_h—d
 )) {
 
-198 
+300 
+	`TAILQ_FOREACH
+(
 »
- = 
-	`TAILQ_FIRST
-(&
+, &
 rou‹_li¡_h—d
-);
+, 
+rou‹_Ãxt_´ev
+) {
 
-199 
+301 
 	`¡rıy
 (
 £nd_msg
+.
+msg
 .
 gw_
 , 
 »
 ->gw_ip);
 
-200 
+302 
 	`¡rıy
 (
 £nd_msg
+.
+msg
 .
 de¡_
 , 
 »
 ->dest_ip);
 
-201 
+303 
 	`¡rıy
 (
 £nd_msg
+.
+msg
 .
 out_içû
 , 
 »
 ->out_iface);
 
-202 
+304 
 £nd_msg
+.
+msg
 .
 mask
  = 
 »
 ->mask;
 
-203 ià((
+305 
+£nd_msg
+.
+İcode
+ = 
+CREATE
+;
+
+306 ià((
 nby‹s
  = 
 	`wr™e
@@ -928,150 +1534,14 @@ d©a_sock‘
 , &
 £nd_msg
 , (£nd_msg)è!ğ(
-msg_body_t
+sync_msg_t
 )))
 
-205 
+308 
 	`´štf
-("Error Sendingailg„outeƒntryohe client\n");
+("Error Sendingailq„outeƒntryohe client\n");
 
-210 
-i
- = 0; 
-comm_sock‘
- = -1;
-
-211 ; 
-i
- < 
-MAX_CLIENT_SUPPORTED
-; i ++) {
-
-212 ià(
-	`FD_ISSET
-(
-mÚ™Üed_fd_£t
-[
-i
-], &
-»adfds
-)) {
-
-213 
-comm_sock‘
- = 
-mÚ™Üed_fd_£t
-[
-i
-];
-
-214 
-	`mem£t
-(
-bufãr
-, 0, 
-BUFFER_SIZE
-);
-
-216 
-	`´štf
-("Waiting for data fromhe client\n");
-
-217 
-»t
- = 
-	`»ad
-(
-comm_sock‘
-, 
-bufãr
-, 
-BUFFER_SIZE
-);
-
-218 ià(
-»t
- == -1) {
-
-219 
-	`³¼Ü
-("Readƒrror");
-
-220 
-	`ex™
-(
-EXIT_FAILURE
-);
-
-222 
-	`memıy
-(&
-d©a
-, 
-bufãr
-, ());
-
-223 ià(
-d©a
- == 0) {
-
-224 
-	`mem£t
-(
-bufãr
-, 0, 
-BUFFER_SIZE
-);
-
-225 
-	`¥rštf
-(
-bufãr
-, "Result = %d", 10);
-
-226 
-	`´štf
-("Sending„esult backohe client\n");
-
-227 
-»t
- = 
-	`wr™e
-(
-comm_sock‘
-, 
-bufãr
-, 
-BUFFER_SIZE
-);
-
-228 ià(
-»t
- == -1) {
-
-229 
-	`³¼Ü
-("Writeƒrror");
-
-230 
-	`ex™
-(
-EXIT_FAILURE
-);
-
-232 
-	`şo£
-(
-comm_sock‘
-);
-
-233 
-	`rm_äom_mÚ™Üed_fd_£t
-(
-comm_sock‘
-);
-
-241 
+347 
 	}
 }
 
@@ -1527,10 +1997,8 @@ out_içû
 	ssync_msg
  {
 
-37 
-št8_t
- 
-İ_code
+37 
+İcode
 ;
 
 38 
@@ -1540,7 +2008,7 @@ msg
 ;
 
 39 } 
-	tsync_misg_t
+	tsync_msg_t
 ;
 
 41 
