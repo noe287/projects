@@ -10,11 +10,11 @@ static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 
 int monitored_fd_set[MAX_CLIENT_SUPPORTED];
-int ret;
 sync_msg_t update_clients;
+int ret;
+int res;
 
 static void init_monitored_fd_set() {
-
 	int i = 0;
 	for(; i < MAX_CLIENT_SUPPORTED; i++)
 		monitored_fd_set[i] = -1;
@@ -73,17 +73,20 @@ static void *get_user_input(void *arg)
 	int opcode;
 	struct route_entry *route = NULL;
 
+	//pthread_detach(pthread_self());
+
 	for(;;) {
 		printf("Please enter type of the operation: Create(0), Update(1), Delete(2), Dump(3), Exit(4)\n");
 		fflush(stdout);
 		scanf("%d", &opcode);
 		switch(opcode) {
+
 			case CREATE:
 				printf("Creating route entry\n");
 				route = (struct route_entry *)malloc(sizeof(struct route_entry));
 				if (route == NULL) {
 					printf("Cannot allocate memory for the route entry\n");
-					pthread_exit(&ret);
+					pthread_exit(&res);
 				}
 				create_rentry(route);
 				TAILQ_INSERT_TAIL(&route_list_head, route, route_next_prev);
@@ -98,6 +101,7 @@ static void *get_user_input(void *arg)
 				pthread_mutex_unlock(&mtx);
 				pthread_cond_signal(&cond);
 				break;
+
 			case UPDATE:
 				printf("Enter Gateway IP:\n");
 				fflush(stdout);
@@ -116,6 +120,7 @@ static void *get_user_input(void *arg)
 				pthread_mutex_unlock(&mtx);
 				pthread_cond_signal(&cond);
 				break;
+
 			case DELETE:
 				printf("Enter Gateway IP delete :\n");
 				fflush(stdout);
@@ -130,12 +135,13 @@ static void *get_user_input(void *arg)
 				pthread_mutex_unlock(&mtx);
 				pthread_cond_signal(&cond);
 				break;
+
 			case DUMP:
 				dump_table();
 				break;
 			case QUIT:
 				printf("Quitting...\n");
-				pthread_exit(&ret);
+				pthread_exit(&res);
 			default:
 				printf("No such operation is defined, retry\n");
 		}
@@ -148,23 +154,24 @@ static void *inform_clients(void *arg) {
 	int nbytes = 0;
 	int s = 0;
 
+	pthread_detach(pthread_self());
+
 	for(;;) {
 		s = pthread_mutex_lock(&mtx);
 		if (s != 0) {
 			perror("Cannot lock mutex");
-			pthread_exit(&ret);
+			pthread_exit(&res);
 		}
 
 		while(update_clients.opcode < 0){
 			s = pthread_cond_wait(&cond, &mtx);
 			if (s != 0) {
 				perror("Cannot wait on a cond variable.");
-				pthread_exit(&ret);
+				pthread_exit(&res);
 			}
 		}
 
 		while(update_clients.opcode >= 0) {
-			/* Now test if our thread signaled us something new */
 			int i = 2;
 			for(; i < MAX_CLIENT_SUPPORTED; i++) {
 				if (monitored_fd_set[i] != -1) {
@@ -176,17 +183,39 @@ static void *inform_clients(void *arg) {
 			}
 			update_clients.opcode = -1;
 		}
+
 		s = pthread_mutex_unlock(&mtx);
 		if (s != 0) {
 			perror("Cannot unlock mutex.");
-			pthread_exit(&ret);
+			pthread_exit(&res);
+		}
+	}
+}
+
+static void *poll_clients(void *arg) {
+
+	char buffer[BUFFER_SIZE];
+
+	pthread_detach(pthread_self());
+	for(;;) {
+		int i = 2;
+		for(; i < MAX_CLIENT_SUPPORTED; i++) {
+			if (monitored_fd_set[i] != -1) {
+				if (ret = read(monitored_fd_set[i], buffer, BUFFER_SIZE) <= 0) {
+					rm_from_monitored_fd_set(monitored_fd_set[i]);
+					close(monitored_fd_set[i]);
+				}
+			}
 		}
 	}
 }
 
 int main() {
+
 	pthread_t input_thread;
 	pthread_t inform_thread;
+	pthread_t poll_thread;
+
 	struct sockaddr_un name;
 	struct route_entry *re;
 	sync_msg_t send_msg;
@@ -194,10 +223,8 @@ int main() {
 	int s = 1;
 	int master_socket, i = 0;
 	int data_socket;
-	int comm_socket;
-	int data;
-	char buffer[BUFFER_SIZE];
 	fd_set readfds;
+	int poll = 0;
 
 	/*init*/
 	init_monitored_fd_set();
@@ -245,7 +272,6 @@ int main() {
 
 	for(;;) {
 		refresh_fd_set(&readfds);
-		printf("Waiting on select()\n");
 		select(get_max_fd() + 1, &readfds, NULL, NULL, NULL);
 
 		/* Test if there is any new connection */
@@ -257,7 +283,12 @@ int main() {
 			}
 			printf("A new client connection is established \n");
 			add_to_monitored_fd_set(data_socket);
-			//dump_table();
+			if (poll == 0) {
+				s = pthread_create(&poll_thread, NULL, poll_clients, NULL);
+				if (s != 0)
+					exit(EXIT_FAILURE);
+				poll = 1;
+			}
 			if (!TAILQ_EMPTY(&route_list_head)) {
 				TAILQ_FOREACH(re, &route_list_head, route_next_prev) {
 					strcpy(send_msg.msg.gw_ip, re->gw_ip);
@@ -271,22 +302,6 @@ int main() {
 					}
 				}
 			}
-
 		}
-
 	}
-	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

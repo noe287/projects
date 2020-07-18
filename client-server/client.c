@@ -36,17 +36,15 @@ int main(int argc, char *argv[])
 	}
 
 	while(1) {
-		if ((size = recv(data_socket, (void *) &received_msg,sizeof(sync_msg_t),0)) >= 0) {
-			printf("r.opcode %d\n", received_msg.opcode);
+		if ((size = recv(data_socket, (void *) &received_msg,sizeof(sync_msg_t), 0)) > 0) {
+			printf("Msg received with size %d bytes\n", size);
 			switch(received_msg.opcode) {
 				case CREATE:
-					printf("Msg received with size %d bytes\n", size);
 					printf("Creating route entry\n");
 					printf("r.gw_ip %s\n", received_msg.msg.gw_ip);
 					printf("r.dest_ip %s\n", received_msg.msg.dest_ip);
 					printf("r.out_iface %s\n", received_msg.msg.out_iface);
 					printf("r.mask %d\n", received_msg.msg.mask);
-					printf("r.opcode %d\n", received_msg.opcode);
 					route = (struct route_entry *)malloc(sizeof(struct route_entry));
 					if (route == NULL) {
 						printf("Cannot allocate memory for the route entry\n");
@@ -71,9 +69,10 @@ int main(int argc, char *argv[])
 				default:
 					printf("No such operation is defined, retry\n");
 			}
-		} else
-			printf("Received msg size does not match the expected one, retry\n");
+		} else {
+			printf("Received msg size does not match the expected one, closing connection\n");
+			close(data_socket);
+			exit(EXIT_SUCCESS);
+		}
 	}
-	close(data_socket);
-	exit(EXIT_SUCCESS);
 }
